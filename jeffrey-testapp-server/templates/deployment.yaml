@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "jeffrey-testapp-server.fullname" . }}
+  name: {{ .Release.Name }}
   labels:
     {{- include "jeffrey-testapp-server.labels" . | nindent 4 }}
 spec:
@@ -43,7 +43,7 @@ spec:
           command:
             - "bash"
             - "-c"
-            - "source /tmp/jeffrey/jeffrey-testapp-{{ .Values.mode }}/.env ; java -jar /work/runner.jar"
+            - "source /tmp/jeffrey/jeffrey-testapp-{{ .Values.mode }}/.env ; java -jar /app/runner.jar"
           {{- with .Values.args }}
           args:
             {{- toYaml . | nindent 12 }}
@@ -70,7 +70,7 @@ spec:
       volumes:
         - name: jeffrey-testapp-server-configmap
           configMap:
-            name: "{{ include "jeffrey-testapp-server.fullname" . }}-configmap"
+            name: "{{ .Release.Name }}-configmap"
             items:
               - key: application.properties
                 path: application.properties
